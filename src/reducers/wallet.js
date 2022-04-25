@@ -1,7 +1,20 @@
-// const INITIAL_STATE = {
-//   currencies: [],
-//   expenses: [],
-// };
-// const wallet = (state = INITIAL_STATE, action) => state;
+import { SELECTED_CURRENCY } from '../actions';
 
-// export default wallet;
+const INITIAL_STATE = {
+  currencies: [],
+  expenses: [],
+};
+
+const wallet = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+  case SELECTED_CURRENCY:
+    return {
+      ...state,
+      currencies: action.currencies,
+    };
+  default:
+    return state;
+  }
+};
+
+export default wallet;
