@@ -7,8 +7,12 @@ class Header extends React.Component {
     const { userEmail, userExpenses } = this.props;
 
     const totalExpenses = userExpenses.reduce((acc, curr) => {
-      acc += Number(curr.value) * Number(curr.exchangeRates[curr.currency].ask);
-      return acc;
+      if (curr.exchangeRates[curr.currency]) {
+        console.log('Curr', curr);
+        const newValue = acc + (curr.value) * (curr.exchangeRates[curr.currency].ask);
+        console.log('newValue', newValue);
+        return newValue;
+      } return acc;
     }, 0).toFixed(2);
 
     return (

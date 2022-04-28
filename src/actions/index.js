@@ -1,6 +1,7 @@
 export const USER_EMAIL = 'USER_EMAIL';
 export const SELECTED_CURRENCY = 'SELECTED_CURRENCY';
 export const USER_EXPENSE = 'USER_EXPENSE';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 
 export const actionUserEmail = (email) => ({
   type: USER_EMAIL,
@@ -14,6 +15,11 @@ export const actionCurrencies = (currencies) => ({
 
 export const actionExpenses = (expenses) => ({
   type: USER_EXPENSE,
+  expenses,
+});
+
+export const actionDeleteExpense = (expenses) => ({
+  type: DELETE_EXPENSE,
   expenses,
 });
 
