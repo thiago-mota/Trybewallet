@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 import Header from '../components/Header';
 import { actionExpenses, actionRequestCurrencies,
   actionRequestExchangeRates } from '../actions';
+import Table from '../components/Table';
 
 class Wallet extends React.Component {
   constructor() {
@@ -151,6 +152,8 @@ class Wallet extends React.Component {
           >
             Adicionar despesa
           </button>
+
+          <Table />
 
         </section>
       </main>
