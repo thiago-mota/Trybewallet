@@ -2,18 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import Header from '../components/Header';
-import { actionRequestCurrencies, actionRequestExchangeRates } from '../actions';
+import { actionExpenses, actionRequestCurrencies,
+  actionRequestExchangeRates } from '../actions';
 
 class Wallet extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      expenseValue: '',
-      expenseDescription: '',
-      selectedCurrency: '',
-      paymentMethod: '',
-      expenseCategory: '',
+      id: 0,
+      value: '',
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: 'Alimentação',
+      exchangeRates: '',
     };
   }
 
@@ -22,19 +25,42 @@ class Wallet extends React.Component {
     actionCurrencies();
   }
 
+  teste = async () => {
+    const response = await fetch('https://economia.awesomeapi.com.br/json/all');
+    const exchangeResponse = await response.json();
+    return exchangeResponse;
+  };
+
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
     });
   }
 
-  handleClick = () => {
+  handleClick = async () => {
+    const { userExpenses } = this.props;
+    const currentExchangeRates = await this.teste();
 
+    const newExpense = {
+      ...this.state,
+      exchangeRates: currentExchangeRates,
+    };
+
+    userExpenses(newExpense);
+
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
+      value: '',
+      description: '',
+      currency: '',
+      method: '',
+      tag: '',
+    }));
   }
 
   render() {
-    const { expenseValue, expenseDescription, selectedCurrency,
-      paymentMethod, expenseCategory } = this.state;
+    const { value, description, currency,
+      method, tag } = this.state;
     const { currencies } = this.props;
     const paymentMethods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
     const expenseTags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
@@ -48,10 +74,10 @@ class Wallet extends React.Component {
             Valor
             <input
               data-testid="value-input"
-              name="expenseValue"
+              name="value"
               id="expenseValue"
               type="number"
-              value={ expenseValue }
+              value={ value }
               onChange={ this.handleChange }
             />
           </label>
@@ -60,10 +86,10 @@ class Wallet extends React.Component {
             Descrição
             <input
               data-testid="description-input"
-              name="expenseDescription"
+              name="description"
               id="expenseDescription"
               type="text"
-              value={ expenseDescription }
+              value={ description }
               onChange={ this.handleChange }
             />
           </label>
@@ -74,12 +100,12 @@ class Wallet extends React.Component {
               data-testid="currency-input"
               id="currency"
               name="currency"
-              value={ selectedCurrency }
+              value={ currency }
               onChange={ this.handleChange }
             >
-              { currencies.map((currency) => (
-                <option key={ currency }>
-                  { currency }
+              { currencies.map((moeda) => (
+                <option key={ moeda }>
+                  { moeda }
                 </option>)) }
 
             </select>
@@ -89,9 +115,9 @@ class Wallet extends React.Component {
             Método de pagamento
             <select
               data-testid="method-input"
-              name="paymentMethod"
+              name="method"
               id="paymentMethod"
-              value={ paymentMethod }
+              value={ method }
               onChange={ this.handleChange }
             >
               { paymentMethods.map((methods) => (
@@ -106,9 +132,9 @@ class Wallet extends React.Component {
             Categoria
             <select
               data-testid="tag-input"
-              name="expenseCategory"
+              name="tag"
               id="expenseCategory"
-              value={ expenseCategory }
+              value={ tag }
               onChange={ this.handleChange }
             >
               { expenseTags.map((tags) => (
@@ -134,16 +160,19 @@ class Wallet extends React.Component {
 
 const mapDispatchToProps = (dispatch) => ({
   actionCurrencies: () => dispatch(actionRequestCurrencies()),
-  actionExpenses: () => dispatch(actionRequestExchangeRates()),
+  userExpenses: (value) => dispatch(actionExpenses(value)),
+  actionRates: () => dispatch(actionRequestExchangeRates()),
 });
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  currencyRates: state.wallet.expenses,
 });
 
 Wallet.propTypes = {
   actionCurrencies: propTypes.func.isRequired,
-  actionExpenses: propTypes.func.isRequired,
+  userExpenses: propTypes.func.isRequired,
+  currencies: propTypes.instanceOf(Array).isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

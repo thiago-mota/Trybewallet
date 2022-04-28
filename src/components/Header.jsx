@@ -3,8 +3,23 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
 class Header extends React.Component {
+  // totalExpenses = () => {
+  //   const { userExpenses } = this.props;
+  //   const total = userExpenses.reduce((acc, curr) => {
+  //     acc += curr.value * curr.exchangeRates[curr.currency].ask;
+  //     return acc;
+  //   }, 0);
+  //   console.log(total);
+  // }
+
   render() {
-    const { userEmail } = this.props;
+    const { userEmail, userExpenses } = this.props;
+
+    const totalExpenses = userExpenses.reduce((acc, curr) => {
+      acc += curr.value * curr.exchangeRates[curr.currency].ask;
+      return acc;
+    }, 0);
+
     return (
       <header>
         <p data-testid="email-field">
@@ -14,7 +29,7 @@ class Header extends React.Component {
         </p>
 
         <p data-testid="total-field">
-          0
+          { totalExpenses.toFixed(2) }
         </p>
 
         <p data-testid="header-currency-field">
@@ -27,10 +42,14 @@ class Header extends React.Component {
 
 const mapStateToProps = (state) => ({
   userEmail: state.user.email,
+  userExpenses: state.wallet.expenses,
 });
 
 Header.propTypes = {
   userEmail: propTypes.string.isRequired,
+  userExpenses: propTypes.instanceOf(Array).isRequired,
 };
+
+// https://github.com/jsx-eslint/eslint-plugin-react/issues/2079
 
 export default connect(mapStateToProps)(Header);
