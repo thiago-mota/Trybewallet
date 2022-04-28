@@ -26,7 +26,7 @@ class Wallet extends React.Component {
     actionCurrencies();
   }
 
-  teste = async () => {
+  fetchRates = async () => {
     const response = await fetch('https://economia.awesomeapi.com.br/json/all');
     const exchangeResponse = await response.json();
     return exchangeResponse;
@@ -40,7 +40,7 @@ class Wallet extends React.Component {
 
   handleClick = async () => {
     const { userExpenses } = this.props;
-    const currentExchangeRates = await this.teste();
+    const currentExchangeRates = await this.fetchRates();
 
     const newExpense = {
       ...this.state,
